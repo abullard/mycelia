@@ -1,7 +1,8 @@
 # Mycelia
 
 ### pnpm Command List
-- For a cheat-sheet of npm commands, run `npm cheat`
+- I like pnpm, the choice is yours, otherwise install with `npm i -g pnpm`
+- For a cheat-sheet of pnpm commands, run `pnpm cheat`
 
 ### Run Local Server
 - To run development locally `pnpm i && pnpm dev`
