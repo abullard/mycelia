@@ -48,7 +48,6 @@ function MindMapGraph() {
   const connectingNodeId = useRef<string | null>(null);
   const store = useStoreApi();
   const { screenToFlowPosition } = useReactFlow();
-wa 
 
   const getChildNodePosition = (
     event: MouseEvent | TouchEvent,

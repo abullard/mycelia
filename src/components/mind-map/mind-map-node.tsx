@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useLayoutEffect } from 'react';
 import { Handle, Position, type Node, type NodeProps } from '@xyflow/react';
-import useStore from '@/store/store';
 import styled from 'styled-components';
  
 export type NodeData = {
@@ -9,7 +8,6 @@ export type NodeData = {
  
 function MindMapNode({ id, data }: NodeProps<Node<NodeData>>) {
   const inputRef = useRef<HTMLInputElement>(undefined);
-  const updateNodeLabel = useStore((state) => state.updateNodeLabel);
  
   useLayoutEffect(() => {
     if (inputRef.current) {
@@ -39,12 +37,7 @@ function MindMapNode({ id, data }: NodeProps<Node<NodeData>>) {
             />
           </svg>
         </DragHandle>
-        <input
-          value={data.label}
-          onChange={(evt) => updateNodeLabel(id, evt.target.value)}
-          className="input"
-          ref={inputRef}
-        />
+        <span>{data.label}</span>
       </InputWrapper>
  
       <Handle type="target" position={Position.Top} />

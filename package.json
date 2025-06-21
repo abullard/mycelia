@@ -8,15 +8,14 @@
     "start": "next start",
     "lint": "next lint",
     "database": "duckdb ./database/mycelia.duckdb",
-    "cheat": "tsx scripts/scripts.ts"
+    "akio": "npx @abullard/akio"
   },
   "scriptDescriptions": {
     "dev": "start the local next server",
     "build": "production build",
     "start": "start in production",
     "lint": "tbd",
-    "database": "start duckdb REPL with local database",
-    "cheat": "shows cheatsheet, i.e. this"
+    "database": "start duckdb REPL with local database"
   },
   "dependencies": {
     "@duckdb/node-api": "1.3.0-alpha.21",
@@ -25,6 +24,7 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@abullard/akio": "^1.0.3",
     "@eslint/eslintrc": "^3",
     "@types/nanoid": "^3.0.0",
     "@types/node": "^20",

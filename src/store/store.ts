@@ -15,27 +15,30 @@ import { nanoid } from 'nanoid/non-secure';
 export type RFState = {
   nodes: Node[];
   edges: Edge[];
+  selectedNode: Node;
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
+  setSelectedNode: (node: Node) => void;
   addChildNode: (parentNode: Node, position: XYPosition, label: string) => void;
-  updateNodeLabel: (nodeId: string, label: string) => void;
+};
+
+const startingNode: Node = {
+  id: 'root',
+  /*
+   TODO AJB 05/22/2025: vvv this maps to .react-flow__node-mindmap in mind-map.css
+   you'll need to change this impl to just be the node you want
+  */
+  type: 'mindmap',
+  data: { label: 'root' },
+  position: { x: 0, y: 0 },
 };
 
 const useStore = create<RFState>((set, get) => ({
-  nodes: [
-    {
-      id: 'root',
-      /*
-       TODO AJB 05/22/2025: vvv this maps to .react-flow__node-mindmap in mind-map.css
-       you'll need to change this impl to just be a the node you want
-      */
-      type: 'mindmap',
-      data: { label: 'root' },
-      position: { x: 0, y: 0 },
-    },
-  ],
+  nodes: [startingNode],
 
   edges: [],
+
+  selectedNode: startingNode,
 
   onNodesChange: (changes: NodeChange[]) => {
     set({
@@ -47,6 +50,12 @@ const useStore = create<RFState>((set, get) => ({
     set({
       edges: applyEdgeChanges(changes, get().edges),
     });
+  },
+
+  setSelectedNode: (node: Node) => {
+    set({
+      selectedNode: node
+    })
   },
 
   addChildNode: (parentNode: Node, position: XYPosition, label: string) => {
@@ -67,25 +76,6 @@ const useStore = create<RFState>((set, get) => ({
     set({
       nodes: [...get().nodes, newNode],
       edges: [...get().edges, newEdge],
-    });
-  },
-
-  updateNodeLabel: (nodeId: string, label: string) => {
-    set({
-      nodes: get().nodes.map((node) => {
-        if (node.id === nodeId) {
-          // Create a completely new node object to ensure React Flow detects the change
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              label,
-            },
-          };
-        }
-
-        return node;
-      }),
     });
   },
 }));
