@@ -37,7 +37,7 @@ function MindMapNode({ id, data }: NodeProps<Node<NodeData>>) {
             />
           </svg>
         </DragHandle>
-        <span>{data.label}</span>
+        <span style={{fontSize:'10px'}}>{data.label}</span>
       </InputWrapper>
  
       <Handle type="target" position={Position.Top} />

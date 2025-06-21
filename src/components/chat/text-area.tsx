@@ -49,6 +49,7 @@ const SubmitButton = styled.input.attrs({ type: 'submit' })`
   border-radius: 4px;
   font-weight: 500;
   margin: 1rem;
+  right: 0;
   text-transform: uppercase;  
   font-size: 0.875rem;
   cursor: pointer;
@@ -80,6 +81,7 @@ const StyledTextArea = styled.textarea`
   resize: vertical;
   min-height: 100px;
   background-color: #fff;
+  width: 100%;
   color: #333;
   transition: border-color 0.2s, box-shadow 0.2s;
 
