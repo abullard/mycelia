@@ -2,17 +2,13 @@
 import '@xyflow/react/dist/style.css';
 import '../../css/mind-map.css';
 
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef } from 'react';
 import {
   ReactFlow,
   Controls,
-  Panel,
   useStoreApi,
-  useReactFlow,
   ConnectionLineType,
   type NodeOrigin,
-  type InternalNode,
-  type OnConnectEnd,
   type OnConnectStart,
 } from '@xyflow/react';
 import { useShallow } from 'zustand/shallow';
@@ -26,6 +22,7 @@ const selector = (state: RFState) => ({
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   addChildNode: state.addChildNode,
+  setSelectedNode: state.setSelectedNode,
 });
 
 const nodeTypes = {
@@ -42,78 +39,29 @@ const defaultEdgeOptions = { style: connectionLineStyle, type: 'mindmap' };
 
 function MindMapGraph() {
   // whenever you use multiple values, you should use shallow for making sure that the component only re-renders when one of the values change
-  const { nodes, edges, onNodesChange, onEdgesChange, addChildNode } = useStore(
+  const { nodes, edges, onNodesChange, onEdgesChange, setSelectedNode } = useStore(
     useShallow(selector),
   );
   const connectingNodeId = useRef<string | null>(null);
   const store = useStoreApi();
-  const { screenToFlowPosition } = useReactFlow();
-
-  const getChildNodePosition = (
-    event: MouseEvent | TouchEvent,
-    parentNode?: InternalNode,
-  ) => {
-    const { domNode } = store.getState();
-
-    if (
-      !domNode ||
-      // we need to check if these properties exist, because when a node is not initialized yet,
-      // it doesn't have a positionAbsolute nor a width or height
-      !parentNode?.internals.positionAbsolute ||
-      !parentNode?.measured.width ||
-      !parentNode?.measured.height
-    ) {
-      return;
-    }
-
-    const isTouchEvent = 'touches' in event;
-    const x = isTouchEvent ? event.touches[0].clientX : event.clientX;
-    const y = isTouchEvent ? event.touches[0].clientY : event.clientY;
-    // we need to remove the wrapper bounds, in order to get the correct mouse position
-    const panePosition = screenToFlowPosition({
-      x,
-      y,
-    });
-
-    // we are calculating with positionAbsolute here because child nodes are positioned relative to their parent
-    return {
-      x:
-        panePosition.x -
-        parentNode.internals.positionAbsolute.x +
-        parentNode.measured.width / 2,
-      y:
-        panePosition.y -
-        parentNode.internals.positionAbsolute.y +
-        parentNode.measured.height / 2,
-    };
-  };
 
   const onConnectStart: OnConnectStart = useCallback((_, { nodeId }) => {
+    const { nodeLookup } = store.getState();
+
     connectingNodeId.current = nodeId;
+
+    if (connectingNodeId.current) {
+      const currentNode = nodeLookup.get(connectingNodeId.current);
+
+      if (currentNode) {
+        setSelectedNode(currentNode);
+      }
+    }
   }, []);
 
-  const onConnectEnd: OnConnectEnd = useCallback(
-    (event) => {
-      const { nodeLookup } = store.getState();
-      const targetIsPane = (event.target as Element).classList.contains(
-        'react-flow__pane',
-      );
-      const node = (event.target as Element).closest('.react-flow__node');
-
-      if (node) {
-        node.querySelector('input')?.focus({ preventScroll: true });
-      } else if (targetIsPane && connectingNodeId.current) {
-        const currentNode = nodeLookup.get(connectingNodeId.current);
-
-        // TODO AJB 05/22/2025: bring this back to create new nodes by dragging
-        // const childNodePosition = getChildNodePosition(event, parentNode);
-        // if (parentNode && childNodePosition) {
-        // addChildNode(parentNode, childNodePosition, '');
-        // }
-      }
-    },
-    [getChildNodePosition],
-  );
+  // const setCenter: SetCenter = () => {
+  // TODO AJB 06/20/2025: scroll mindmap to center
+  // };
 
   return (
     <ReactFlow
@@ -124,7 +72,6 @@ function MindMapGraph() {
       nodeTypes={nodeTypes}
       edgeTypes={edgeTypes}
       onConnectStart={onConnectStart}
-      onConnectEnd={onConnectEnd}
       nodeOrigin={nodeOrigin}
       connectionLineStyle={connectionLineStyle}
       defaultEdgeOptions={defaultEdgeOptions}
@@ -132,9 +79,6 @@ function MindMapGraph() {
       fitView
     >
       <Controls showInteractive={false} />
-      <Panel position="top-left" className="header">
-        React Flow Mind Map
-      </Panel>
     </ReactFlow>
   );
 }

@@ -19,7 +19,7 @@ export type RFState = {
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
   setSelectedNode: (node: Node) => void;
-  addChildNode: (parentNode: Node, position: XYPosition, label: string) => void;
+  addChildNode: (parentNode: Node, position: XYPosition, label: string) => Node;
 };
 
 const startingNode: Node = {
@@ -58,7 +58,7 @@ const useStore = create<RFState>((set, get) => ({
     })
   },
 
-  addChildNode: (parentNode: Node, position: XYPosition, label: string) => {
+  addChildNode: (parentNode: Node, position: XYPosition, label: string): Node => {
     const newNode = {
       id: nanoid(),
       type: 'mindmap',
@@ -77,6 +77,8 @@ const useStore = create<RFState>((set, get) => ({
       nodes: [...get().nodes, newNode],
       edges: [...get().edges, newEdge],
     });
+
+    return newNode;
   },
 }));
 
