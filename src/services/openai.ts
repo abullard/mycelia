@@ -1,12 +1,17 @@
-import OpenAI from "openai";
-const client = new OpenAI();
+"use server";
 
-// TODO AJB 06/21/2025: need to get the API key in here, its in your env vars
+import { Ollama } from 'ollama';
+
 export const PromptAndRespond = async (prompt: string): Promise<string> => {
-    const response = await client.responses.create({
-        model: "gpt-4.1",
-        input: prompt
-    });
-    
-    return response.output_text;
+    const ollamaUrl = 'http://127.0.0.1:11434';
+    const ollama = new Ollama({ host: ollamaUrl })
+
+    const payload = {
+        model: 'moondream',
+        messages: [{ role: 'user', content: prompt }]
+    };
+
+    const response = await ollama.chat(payload);
+
+    return response.message.content;
 };

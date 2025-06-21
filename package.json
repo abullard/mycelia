@@ -8,6 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "database": "duckdb ./database/mycelia.duckdb",
+    "ollama:serve": "ollama serve",
+    "ollama:stop": "systemctl stop ollama",
+    "ollama:moondream": "ollama run moondream",
     "akio": "npx @abullard/akio"
   },
   "scriptDescriptions": {
@@ -15,11 +18,15 @@
     "build": "production build",
     "start": "start in production",
     "lint": "tbd",
-    "database": "start duckdb REPL with local database"
+    "database": "start duckdb REPL with local database",
+    "ollama:serve": "start the ollama LLM locally",
+    "ollama:stop": "stop ollama:serve",
+    "ollama:moondream": "RUN ONCE: install lightweight ollama moondream model"
   },
   "dependencies": {
     "@duckdb/node-api": "1.3.0-alpha.21",
     "next": "15.1.8",
+    "ollama": "^0.5.16",
     "openai": "^5.6.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -34,6 +41,7 @@
     "@types/styled-components": "^5.1.34",
     "@xyflow/react": "^12.6.4",
     "classcat": "^5.0.5",
+    "dotenv": "^16.5.0",
     "eslint": "^9",
     "eslint-config-next": "15.1.8",
     "nanoid": "^5.1.5",

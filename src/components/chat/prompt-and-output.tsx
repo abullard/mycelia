@@ -33,32 +33,33 @@ const createNewNode = (
 
 
 function PromptAndOutput() {
-    const [text, setText] = useState<string>('');
+    const [prompt, setPrompt] = useState<string>('');
+    const [output, setOutput] = useState<string>('');
 
     const { addChildNode, selectedNode, setSelectedNode } = useStore(
         useShallow(selector),
     );
 
     const submit = useCallback(async () =>{
-        createNewNode(selectedNode, text, addChildNode, setSelectedNode)
-        const response = await PromptAndRespond(text);
+        createNewNode(selectedNode, prompt, addChildNode, setSelectedNode)
+        const response = await PromptAndRespond(prompt);
         
-        console.log('AJB: response: ', response);
-    }, [text, selectedNode]);
+        setOutput(response);
+    }, [prompt, selectedNode]);
 
     return (
         <>
             <TextArea
                 id="prompt"
                 label="prompt area"
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
                 onSubmit={submit}
                 placeholder="Ask anything."
             />
             <div>
-                <span>
-
+                <span style={{fontSize:'24px'}}>
+                    {output}
                 </span>
             </div>
         </>
